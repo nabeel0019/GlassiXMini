@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>GlassiX-Mini — Pair Device</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --sky: #87CEEB;
+      --bg: #f6f9fc;
+      --card: #ffffff;
+      --accent: #0b84ff;
+      --mono: "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    body {
+      margin: 0;
+      font-family: var(--mono);
+      background: linear-gradient(180deg,#eef7fb 0%, #ffffff 100%);
+      -webkit-font-smoothing:antialiased;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:20px;
+    }
+    .panel {
+      width:100%;
+      max-width:920px;
+      background:var(--card);
+      border-radius:12px;
+      box-shadow: 0 10px 30px rgba(10,20,30,0.08);
+      overflow:hidden;
+      border: 1px solid rgba(10,20,30,0.04);
+    }
+    .header {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:18px 22px;
+      border-bottom:1px solid rgba(10,20,30,0.04);
+    }
+    .logo {
+      width:64px;height:64px;border-radius:8px;overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+      background:var(--sky);
+      border:2px solid rgba(255,255,255,0.6);
+    }
+    .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .title {
+      font-size:18px;
+      font-weight:700;
+      color:#0b2340;
+    }
+    .subtitle { font-size:13px;color:#4b6478; margin-top:4px }
+    .body {
+      display:flex;
+      gap:20px;
+      padding:20px;
+      align-items:flex-start;
+    }
+
+    /* Left column: controls */
+    .left {
+      flex: 0 0 360px;
+      padding:14px;
+      border-radius:8px;
+      background: linear-gradient(180deg, rgba(135,206,235,0.06), rgba(255,255,255,0.02));
+      border:1px solid rgba(135,206,235,0.14);
+    }
+    .label { font-size:13px;color:#27455b;margin-bottom:8px;font-weight:600 }
+    input[type="text"]{
+      width:100%;
+      padding:12px 14px;
+      border-radius:8px;
+      border:1px solid rgba(10,20,30,0.06);
+      font-size:14px;
+      outline:none;
+    }
+    .btn {
+      margin-top:12px;
+      display:inline-flex;align-items:center;gap:8px;
+      background:var(--accent);
+      color:#fff;padding:10px 14px;border-radius:8px;
+      border:none;cursor:pointer;font-weight:700;
+      box-shadow: 0 6px 18px rgba(11,132,255,0.16);
+    }
+    .btn.secondary {
+      background:transparent;color:var(--accent);border:1px solid rgba(11,132,255,0.12);box-shadow:none;font-weight:600;
+    }
+
+    /* Right column: console */
+    .right {
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .consoleCard{
+      background: linear-gradient(180deg, rgba(135,206,235,0.10), rgba(135,206,235,0.05));
+      border: 2px solid #87CEEB; /* sky blue border */
+      border-radius:10px;
+      min-height:320px;
+      padding:12px;
+      overflow:auto;
+      font-family: "Courier New", monospace;
+      color:#022033;
+      box-sizing:border-box;
+    }
+    .consoleHeader{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:6px;
+    }
+    .small { font-size:12px;color:#013246;opacity:0.9 }
+    .log {
+      white-space:pre-wrap; font-size:13px; line-height:1.4;
+    }
+    .footer {
+      padding:12px 20px;border-top:1px solid rgba(10,20,30,0.03);
+      display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#4b6478;
+    }
+    @media (max-width:860px){
+      .body{ flex-direction:column }
+      .left{ width:100%; order:2 }
+      .right{ order:1 }
+    }
+  </style>
+</head>
+<body>
+  <div class="panel" role="main" aria-label="GlassiX Mini Pair Panel">
+    <div class="header">
+      <div class="logo"><img src="dyby.png" alt="GlassiX Mini"/></div>
+      <div>
+        <div class="title">GlassiX-Mini — Pair Device</div>
+        <div class="subtitle">Owner: Nabeed · Version 1.1.2 · Panel Mode</div>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="left" >
+        <div class="label">Enter WhatsApp number (with country code)</div>
+        <input id="number" type="text" placeholder="e.g. 923001234567" />
+        <button id="connect" class="btn">Connect Device</button>
+        <button id="clear" class="btn secondary" style="margin-left:8px">Clear Log</button>
+
+        <div style="margin-top:14px">
+          <div class="label">Instructions</div>
+          <div style="font-size:13px;color:#214d5f">
+            • Enter number and click <strong>Connect Device</strong>.<br/>
+            • If a session for this number already exists on server, pairing will succeed immediately.<br/>
+            • Otherwise server will tell you to create session (scan QR on server console once).
+          </div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="consoleHeader">
+          <div class="small"><strong>Live Console</strong></div>
+          <div class="small">Status: <span id="status">idle</span></div>
+        </div>
+
+        <div id="console" class="consoleCard" role="log" aria-live="polite">
+          <div class="log" id="log">[Log] Ready. Enter number and click Connect.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>GlassiX-Mini — owner: Nabeed</div>
+      <div>Plugins: 48 · Mode: Public</div>
+    </div>
+  </div>
+
+<script>
+  const connectBtn = document.getElementById('connect');
+  const clearBtn = document.getElementById('clear');
+  const numInput = document.getElementById('number');
+  const log = document.getElementById('log');
+  const status = document.getElementById('status');
+
+  function appendLog(text){
+    log.textContent += "\\n" + text;
+    const el = document.getElementById('console');
+    el.scrollTop = el.scrollHeight;
+  }
+
+  clearBtn.onclick = ()=> {
+    log.textContent = "[Log] Cleared.";
+    status.textContent = 'idle';
+  };
+
+  connectBtn.onclick = async () => {
+    const number = numInput.value.trim();
+    if(!number){ alert('Enter number first'); return; }
+
+    appendLog(`[${new Date().toLocaleTimeString()}] Sending pair request for ${number}...`);
+    status.textContent = 'pairing';
+
+    try {
+      const res = await fetch('/pair', {
+        method:'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ number })
+      });
+      const data = await res.json();
+      appendLog(`[${new Date().toLocaleTimeString()}] Server: ${data.message}`);
+      if(data.connected){
+        status.textContent = 'connected';
+        appendLog(`[${new Date().toLocaleTimeString()}] Device appears connected for ${number}.`);
+      } else {
+        status.textContent = 'needs-session';
+        appendLog(`[${new Date().toLocaleTimeString()}] Action: ${data.action}`);
+      }
+    } catch (err){
+      appendLog(`[${new Date().toLocaleTimeString()}] Network error: ${err.message}`);
+      status.textContent = 'error';
+    }
+  };
+
+  // allow Enter to trigger
+  numInput.addEventListener('keydown', (e)=> {
+    if(e.key === 'Enter') connectBtn.click();
+  });
+</script>
+</body>
+</html>
